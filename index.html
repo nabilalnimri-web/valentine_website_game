@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joyce's Valentine Game ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
+      background: #0b0b0f;
+    }
+    h1 {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.3rem;
+      margin: 25px 10px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+    }
+    p { text-shadow: 0 2px 10px rgba(0,0,0,0.35); }
+
+    .screen {
+      display: none;
+      padding: 20px;
+      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .active { display: flex; }
+
+    /* Per-level backgrounds */
+    .bg-start { background: radial-gradient(1000px 600px at 20% 20%, rgba(255,46,99,0.65), transparent 60%), radial-gradient(800px 500px at 80% 30%, rgba(255,139,167,0.55), transparent 60%), linear-gradient(135deg, #230018, #3a0028); }
+    .bg-quiz1 { background: radial-gradient(900px 600px at 50% 30%, rgba(255,120,180,0.55), transparent 60%), linear-gradient(135deg, #1a0022, #3b0030); }
+    .bg-memory { background: radial-gradient(900px 600px at 30% 20%, rgba(255,80,120,0.45), transparent 60%), radial-gradient(900px 600px at 70% 70%, rgba(255,200,220,0.25), transparent 60%), linear-gradient(135deg, #120014, #2a0021); }
+    .bg-minigame { background: radial-gradient(900px 600px at 50% 20%, rgba(255,46,99,0.40), transparent 65%), linear-gradient(135deg, #0b0b0f, #2b0018); }
+    .bg-final { background: radial-gradient(900px 600px at 50% 25%, rgba(255,139,167,0.40), transparent 65%), linear-gradient(135deg, #120014, #41002a); }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.95);
+      color: #ff2e63;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.2s;
+      position: relative;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.28);
+    }
+    button:hover { transform: scale(1.08); }
+
+    img {
+      width: 220px;
+      max-width: 90%;
+      border-radius: 20px;
+      margin: 10px 0;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .floating-heart {
+      position: absolute;
+      cursor: pointer;
+      font-size: 26px;
+      user-select: none;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+
+    /* Falling hearts background */
+    .falling-heart {
+      position: absolute;
+      top: -10vh;
+      left: 0;
+      font-size: 20px;
+      opacity: 0.9;
+      pointer-events: none;
+      animation: fall linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
+    }
+    @keyframes fall {
+      to { transform: translateY(115vh) rotate(360deg); }
+    }
+
+    #timer { font-size: 18px; margin: 10px; }
+    .letter {
+      max-width: 600px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 20px;
+      border-radius: 20px;
+      margin: 20px auto;
+      line-height: 1.6;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
+    }
+    iframe {
+      border-radius: 12px;
+      margin-top: 20px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
+    }
+
+    /* Mobile spacing */
+    .stack { max-width: 720px; }
+  
+    .media-row{
+      display:flex;
+      gap:18px;
+      justify-content:center;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      margin-top: 18px;
+    }
+    .media-col{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+    video{
+      border-radius: 12px;
+      margin-top: 10px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.35);
+      background: rgba(0,0,0,0.2);
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- START -->
+<div class="screen active bg-start" id="start">
+  <h1>Joyce's Valentine Game ❤️</h1>
+  <p class="stack">A small game made just for you 💕</p>
+  <button onclick="nextScreen('quiz1')">Start 🎮</button>
+</div>
+
+<!-- QUIZ -->
+<div class="screen bg-quiz1" id="quiz1">
+  <h1>Level 1</h1>
+  <p>Who owns my heart?</p>
+  <button onclick="nextScreen('memory')">JOYCE 💖</button>
+  <button onclick="alert('Hmm… try again 😝')">Someone Else</button>
+</div>
+
+<!-- MEMORY -->
+<div class="screen bg-memory" id="memory">
+  <h1>Level 2 - Our Memories 📸</h1>
+
+  <!-- IMPORTANT:
+       These image src values must be reachable by the browser.
+       Put the image files in the SAME folder as this HTML file, then keep the filenames below.
+  -->
+  <img loading="lazy" alt="Memory 1" src="WhatsApp Image 2026-02-12 at 13.00.25.jpeg">
+  <img loading="lazy" alt="Memory 2" src="WhatsApp Image 2026-02-12 at 13.01.14.jpeg">
+  <img loading="lazy" alt="Memory 3" src="WhatsApp Image 2026-02-12 at 13.01.39.jpeg">
+
+  
+  <img loading="lazy" alt="Memory 4" src="WhatsApp Image 2026-02-13 at 19.23.49.jpeg">
+  <img loading="lazy" alt="Memory 5" src="WhatsApp Image 2026-02-13 at 19.23.48.jpeg">
+
+<button onclick="nextScreen('minigame')">Next ❤️</button>
+</div>
+
+<!-- MINI GAME (EASY MODE) -->
+<div class="screen bg-minigame" id="minigame">
+  <h1>Level 3 - Catch 5 Hearts 💘</h1>
+  <p id="timer">Time: 15</p>
+  <p>Score: <span id="score">0</span></p>
+</div>
+
+<!-- FINAL -->
+<div class="screen bg-final" id="final">
+  <h1>You Did It ❤️</h1>
+  <p>Joyce, will you be my Valentine?</p>
+  <div style="position:relative; height:150px;">
+    <button onclick="showLetter()">YES ❤️</button>
+    <button id="noBtn" onmouseover="moveNoButton()">NO 😢</button>
+  </div>
+
+  <div id="loveContent" style="display:none;">
+    <div class="letter">
+      <h2>My Love Letter to You 💌</h2>
+      <p>
+        Joyce,
+        <br><br>
+        From the moment you came into my life, everything became brighter.
+        Your smile makes my worst days better, your laugh is my favorite sound,
+        and being with you feels like home.
+        <br><br>
+        I am so grateful for every memory we’ve made and every second we share.
+        You are beautiful inside and out, and I’m so lucky to call you mine.
+        <br><br>
+        No matter what happens, I promise to care for you, support you,
+        and choose you every single day.
+        <br><br>
+        Happy Valentine’s Day ❤️
+      </p>
+    </div>
+
+    <div class="media-row">
+      <div class="media-col">
+        <h2>Our Playlist 🎵</h2>
+        <iframe src="https://open.spotify.com/embed/playlist/0cVPdplH7YbQhluBGKalMy" width="300" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+      </div>
+      <div class="media-col">
+        
+<h2>This song is for you</h2>
+<iframe width="300" height="380"
+src="https://drive.google.com/file/d/1d6HImyE_BdQYcF0XI4xqJ5UYbekctB7D/preview"
+allow="autoplay"
+style="border-radius:12px; box-shadow:0 14px 34px rgba(0,0,0,0.35);">
+</iframe>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let score = 0;
+  let timeLeft = 15;
+  let interval = null;
+  let countdown = null;
+
+  // Falling hearts background manager (per screen)
+  const bgIntervals = new Map();
+
+  function startFallingHearts(screenEl) {
+    stopFallingHearts(screenEl);
+
+    const hearts = ['💖','💗','💘','💕','💝'];
+    const densityMs = 220; // spawn rate
+
+    const spawn = () => {
+      const h = document.createElement('div');
+      h.className = 'falling-heart';
+      h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      h.style.left = (Math.random() * 100) + 'vw';
+      h.style.fontSize = (14 + Math.random() * 18) + 'px';
+      h.style.opacity = (0.45 + Math.random() * 0.55).toFixed(2);
+      const duration = 5 + Math.random() * 6;
+      h.style.animationDuration = duration + 's';
+      screenEl.appendChild(h);
+      setTimeout(() => h.remove(), (duration * 1000) + 200);
+    };
+
+    const id = setInterval(spawn, densityMs);
+    bgIntervals.set(screenEl.id, id);
+  }
+
+  function stopFallingHearts(screenEl) {
+    const id = bgIntervals.get(screenEl.id);
+    if (id) {
+      clearInterval(id);
+      bgIntervals.delete(screenEl.id);
+    }
+    // remove any leftover hearts from that screen
+    screenEl.querySelectorAll('.falling-heart').forEach(e => e.remove());
+  }
+
+  function nextScreen(id) {
+    // stop minigame timers if leaving minigame
+    const current = document.querySelector('.screen.active');
+    if (current && current.id === 'minigame') {
+      clearInterval(interval);
+      clearInterval(countdown);
+      interval = null;
+      countdown = null;
+      document.querySelectorAll('.floating-heart').forEach(h => h.remove());
+    }
+
+    // stop falling hearts on current screen
+    if (current) stopFallingHearts(current);
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const next = document.getElementById(id);
+    next.classList.add('active');
+
+    // start falling hearts background on next screen
+    startFallingHearts(next);
+
+    if (id === 'minigame') startMiniGame();
+  }
+
+  function startMiniGame() {
+    score = 0;
+    timeLeft = 15;
+    document.getElementById('score').innerText = score;
+    document.getElementById('timer').innerText = "Time: " + timeLeft;
+
+    interval = setInterval(createHeart, 800);
+
+    countdown = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer').innerText = "Time: " + timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        clearInterval(countdown);
+        interval = null;
+        countdown = null;
+        document.querySelectorAll('.floating-heart').forEach(h => h.remove());
+
+        if (score >= 5) {
+          nextScreen('final');
+        } else {
+          alert('Almost! Try again 💕');
+          nextScreen('minigame');
+        }
+      }
+    }, 1000);
+  }
+
+  function createHeart() {
+    let heart = document.createElement('div');
+    heart.className = 'floating-heart';
+    heart.innerHTML = '💖';
+    heart.style.left = Math.random() * 90 + 'vw';
+    heart.style.top = Math.random() * 70 + 'vh';
+    heart.onclick = function() {
+      score++;
+      document.getElementById('score').innerText = score;
+      heart.remove();
+    }
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 3000);
+  }
+
+  function moveNoButton() {
+    let btn = document.getElementById('noBtn');
+    btn.style.position = 'absolute';
+    btn.style.left = Math.random() * 200 + 'px';
+    btn.style.top = Math.random() * 100 + 'px';
+  }
+
+  function showLetter() {
+    var bgMusic = document.getElementById("bgMusic");
+    if (bgMusic) { bgMusic.pause(); }
+    document.getElementById('loveContent').style.display = 'block';
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+
+  // Start hearts on initial screen
+  document.addEventListener('DOMContentLoaded', () => {
+    const current = document.querySelector('.screen.active');
+    if (current) startFallingHearts(current);
+  });
+</script>
+
+<!-- Background Love Song -->
+<audio id="bgMusic" autoplay loop>
+  <source src="cant-help-falling-in-love.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // Some browsers block autoplay — start music on first click
+  document.addEventListener('click', function() {
+    const music = document.getElementById('bgMusic');
+    if (music.paused) { music.play(); }
+  }, { once: true });
+</script>
+
+</body>
+</html>
