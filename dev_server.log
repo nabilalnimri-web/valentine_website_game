@@ -1,0 +1,28 @@
+
+> omnitrix-database@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.3
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ○ Compiling / ...
+ ✓ Compiled / in 7.6s (1438 modules)
+ HEAD / 200 in 8269ms
+ ✓ Compiled in 1038ms (696 modules)
+ GET / 200 in 93ms
+ ○ Compiling /aliens ...
+ ✓ Compiled /aliens in 947ms (1416 modules)
+ GET /aliens 200 in 1260ms
+ ✓ Compiled /aliens/[id] in 412ms (1430 modules)
+ GET /aliens/heatblast 200 in 1213ms
+ ✓ Compiled /characters in 374ms (1444 modules)
+ GET /characters 200 in 461ms
+ ✓ Compiled in 732ms (1436 modules)
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+  ▲ Next.js 14.2.3
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.8s
